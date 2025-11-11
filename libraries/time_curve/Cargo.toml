@@ -1,0 +1,6 @@
+[package]
+name = "exponent-time-curve"
+version = "0.1.0"
+description = "Time-based AMM curve."
+edition = "2021"
+license = "AGPL-3.0"
