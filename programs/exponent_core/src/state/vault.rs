@@ -106,6 +106,7 @@ impl Vault {
         current_ts > self.start_ts + self.duration
     }
 
+    #[cfg(test)]
     /// Ensure that the total SY in escrow is greater than or equal to the sum of SY for PT holders, treasury SY, and uncollected SY
     pub fn sy_balance_invariant(&self) -> bool {
         self.total_sy_in_escrow >= self.sy_for_pt + self.treasury_sy + self.uncollected_sy
