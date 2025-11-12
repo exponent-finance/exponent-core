@@ -1,12 +1,12 @@
-# Exponent Core - Yield Stripping and Swap Program
+# Exponent Core – Yield Stripping and Swap Program
 
 This repository contains the core program for the Exponent protocol, a yield stripping and interest swap exchange on Solana. For a high level overview of how Exponent works, see its [documentation](https://docs.exponent.finance).
 
 ## Deployment
 
 - Program ID (Mainnet): `ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7`
-- On-chain Program Hash: `d0d24f3e7bb1ecc21a0f25c3d7ba79a16518d6f980c533e7e6d2c84d0af02af6`
-- Deployed Commit Hash: `a5ffb39ac886e954be641a3411b4626a28cf98c6`
+- On-chain Program Hash: `e584d8035cbe411f6dc3a24bdcd32a29e4bf953569c1c4971b23c03793a16b3c`
+- Deployed Commit Hash: `7011d1b46b542611543f8ed21836b165f2ab75ac`
 
 Solana deployments can be verified using the [Ellipsis Labs verifiable build tool](https://github.com/Ellipsis-Labs/solana-verifiable-build), based on the `solanafoundation/solana-verifiable-build:2.3.8` base image.
 
