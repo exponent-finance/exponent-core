@@ -1,0 +1,12 @@
+{
+    "idl": "target/idl/exponent_core.json",
+    "before": [],
+    "scripts": {
+        "js": {
+            "from": "@codama/renderers-js",
+            "args": [
+                "clients/js/src/generated"
+            ]
+        }
+    }
+}
