@@ -103,6 +103,11 @@ pub struct MarketFinancials {
     /// This amount is tracked separately to prevent bugs from token transfers directly to the market
     pub sy_balance: u64,
 
+    // WARNING: These f64 fields are used in financial calculations.
+    // f64 has ~15-16 decimal digits of precision. For token amounts
+    // near 10^18, each operation can lose ~2 units of precision.
+    // See https://github.com/exponent-finance/exponent-core/issues/NUM
+    // for discussion on migrating to U256-based fixed-point math.
     /// Initial log of fee rate, which decreases over time
     pub ln_fee_rate_root: f64,
 
