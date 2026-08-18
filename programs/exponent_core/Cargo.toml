@@ -1,0 +1,37 @@
+[package]
+name = "exponent_core"
+version = "0.1.0"
+description = "Created with Anchor"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "exponent_core"
+
+[features]
+default = ["custom-heap"]
+custom-heap = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "0.31.1", features = ["event-cpi"] }
+anchor-spl = { version = "0.31.1" }
+solana-address-lookup-table-program = "~2.1.0"
+precise_number = { path = "../../libraries/precise_number" }
+token_util = { path = "../../libraries/token_util" }
+sy_common = { path = "../../libraries/sy_common" }
+exponent-time-curve = { path = "../../libraries/time_curve" }
+dec_num = { path = "../../libraries/dec_num" }
+exponent_admin = { path = "../exponent_admin", features = ["no-entrypoint"] }
+amount_value = { path = "../../libraries/amount_value" }
+mpl-token-metadata = { version = "5.1.1" }
+solana-security-txt = "1.1.1"
+proc-macro2 = "1.0.94"
+getrandom = { version = "=0.2.10", features = ["custom"] }
+ahash = "=0.7.8"
+hashbrown = "=0.12.3"
+rand_core = "=0.5.1"
