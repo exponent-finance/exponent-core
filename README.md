@@ -5,10 +5,10 @@ This repository contains the core program for the Exponent protocol, a yield str
 ## Deployment
 
 - Program ID (Mainnet): `ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7`
-- On-chain Program Hash: `e584d8035cbe411f6dc3a24bdcd32a29e4bf953569c1c4971b23c03793a16b3c`
-- Deployed Commit Hash: `7011d1b46b542611543f8ed21836b165f2ab75ac`
+- On-chain Program Hash: `a76706a183793c7f95f4e9fa98fcfeff829f16acab994eaa82f3b157732b8899`
+- Deployed Commit Hash: `f78b6818e8445b47b113abdf435f018ef1e4a8d6`
 
-Solana deployments can be verified using the [Ellipsis Labs verifiable build tool](https://github.com/Ellipsis-Labs/solana-verifiable-build), based on the `solanafoundation/solana-verifiable-build:2.3.8` base image.
+Solana deployments can be verified using the [Ellipsis Labs verifiable build tool](https://github.com/Ellipsis-Labs/solana-verifiable-build), based on the `solanafoundation/solana-verifiable-build:2.1.16` base image.
 
 ## Security & Bug bounty
 
