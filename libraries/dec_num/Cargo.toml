@@ -1,0 +1,10 @@
+[package]
+name = "dec_num"
+version = "0.1.0"
+description = "Decimal implementation for tcurve number"
+edition = "2021"
+
+[dependencies]
+rust_decimal = { version = "1.36.0", features = ["maths", "borsh"] }
+precise_number = { path = "../precise_number" }
+exponent-time-curve = { path = "../time_curve" }

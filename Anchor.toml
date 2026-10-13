@@ -1,0 +1,18 @@
+[toolchain]
+anchor_version = "0.31.1"
+solana_version = "4.0.0"
+
+[features]
+resolution = false
+skip-lint = false
+
+[programs.localnet]
+exponent_admin = "3D6ojc8vBfDteLBDTTRznZbZRh7bkEGQaYqNkudoTCBQ"
+exponent_core = "ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "./testkp.json"

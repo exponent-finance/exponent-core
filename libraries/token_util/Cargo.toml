@@ -1,0 +1,8 @@
+[package]
+name = "token_util"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+anchor-lang = { version = "0.31.1" }
+anchor-spl = { version = "0.31.1" }

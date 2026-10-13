@@ -1,0 +1,2497 @@
+{
+  "address": "HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn",
+  "metadata": { "name": "hylo_exchange", "version": "0.1.4", "spec": "0.1.0", "description": "Created with Anchor" },
+  "instructions": [
+    {
+      "name": "get_stats",
+      "discriminator": [241, 65, 112, 185, 230, 140, 139, 177],
+      "accounts": [
+        { "name": "hylo", "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "stablecoin_mint",
+          "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 85, 83, 68] }] },
+          "relations": ["hylo"]
+        },
+        {
+          "name": "levercoin_mint",
+          "pda": { "seeds": [{ "kind": "const", "value": [120, 83, 79, 76] }] },
+          "relations": ["hylo"]
+        },
+        { "name": "sol_usd_pyth_feed" }
+      ],
+      "args": [],
+      "returns": { "defined": { "name": "ExchangeStats" } }
+    },
+    {
+      "name": "harvest_yield",
+      "discriminator": [28, 200, 150, 200, 69, 56, 38, 133],
+      "accounts": [
+        { "name": "payer", "writable": true, "signer": true },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "stablecoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 85, 83, 68] }] },
+          "relations": ["hylo"]
+        },
+        {
+          "name": "stablecoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "levercoin_mint",
+          "pda": { "seeds": [{ "kind": "const", "value": [120, 83, 79, 76] }] },
+          "relations": ["hylo"]
+        },
+        {
+          "name": "levercoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "levercoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [102, 101, 101, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "fee_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "stablecoin_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "pool_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "levercoin_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "pool_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "levercoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "pool_auth",
+          "pda": {
+            "seeds": [{ "kind": "const", "value": [112, 111, 111, 108, 95, 97, 117, 116, 104] }],
+            "program": { "kind": "account", "path": "hylo_stability_pool" }
+          }
+        },
+        { "name": "sol_usd_pyth_feed" },
+        { "name": "hylo_stability_pool", "address": "HysTabVUfmQBFcmzu1ctRd1Y1fxd66RBpboy1bmtDSQQ" },
+        { "name": "lst_registry", "writable": true, "relations": ["hylo"] },
+        { "name": "lut_program", "address": "AddressLookupTab1e1111111111111111111111111" },
+        { "name": "associated_token_program", "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" },
+        { "name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_lst_registry",
+      "discriminator": [148, 180, 49, 29, 133, 6, 9, 59],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "registry_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 115, 116, 95, 114, 101, 103, 105, 115, 116, 114, 121, 95, 97, 117, 116, 104]
+              }
+            ]
+          }
+        },
+        { "name": "lst_registry", "writable": true },
+        { "name": "lut_program", "address": "AddressLookupTab1e1111111111111111111111111" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" }
+      ],
+      "args": [{ "name": "slot", "type": "u64" }]
+    },
+    {
+      "name": "initialize_lst_registry_calculators",
+      "discriminator": [109, 166, 101, 171, 217, 202, 83, 166],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "lst_registry_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 115, 116, 95, 114, 101, 103, 105, 115, 116, 114, 121, 95, 97, 117, 116, 104]
+              }
+            ]
+          }
+        },
+        { "name": "lst_registry", "writable": true, "relations": ["hylo"] },
+        { "name": "lut_program", "address": "AddressLookupTab1e1111111111111111111111111" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_mints",
+      "discriminator": [189, 84, 85, 142, 177, 200, 57, 22],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "stablecoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "levercoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "levercoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "stablecoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 85, 83, 68] }] }
+        },
+        {
+          "name": "levercoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [120, 83, 79, 76] }] }
+        },
+        { "name": "stablecoin_metadata", "writable": true },
+        { "name": "levercoin_metadata", "writable": true },
+        { "name": "metadata_program", "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s" },
+        { "name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        { "name": "associated_token_program", "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_protocol",
+      "discriminator": [188, 233, 252, 106, 134, 146, 202, 91],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true },
+        { "name": "upgrade_authority", "signer": true },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        { "name": "treasury" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" },
+        { "name": "program_data" },
+        { "name": "hylo_exchange", "address": "HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn" }
+      ],
+      "args": [
+        { "name": "oracle_interval_secs", "type": "u64" },
+        { "name": "stability_threshold_1", "type": { "defined": { "name": "UFixValue64" } } },
+        { "name": "stability_threshold_2", "type": { "defined": { "name": "UFixValue64" } } },
+        { "name": "stablecoin_fees", "type": { "defined": { "name": "StablecoinFees" } } },
+        { "name": "levercoin_fees", "type": { "defined": { "name": "LevercoinFees" } } },
+        { "name": "yield_harvest_config", "type": { "defined": { "name": "YieldHarvestConfig" } } }
+      ]
+    },
+    {
+      "name": "mint_levercoin",
+      "discriminator": [91, 156, 221, 157, 151, 186, 223, 231],
+      "accounts": [
+        { "name": "user", "writable": true, "signer": true },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "fee_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [102, 101, 101, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "vault_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [118, 97, 117, 108, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "levercoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "levercoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "fee_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "lst_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "lst_header",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [108, 115, 116, 95, 104, 101, 97, 100, 101, 114] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "user_lst_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "user_levercoin_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "levercoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        { "name": "lst_mint" },
+        {
+          "name": "levercoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [120, 83, 79, 76] }] },
+          "relations": ["hylo"]
+        },
+        { "name": "stablecoin_mint", "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 85, 83, 68] }] } },
+        { "name": "sol_usd_pyth_feed" },
+        { "name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        { "name": "associated_token_program", "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [
+        { "name": "amount_lst_to_deposit", "type": "u64" },
+        { "name": "slippage_config", "type": { "option": { "defined": { "name": "SlippageConfig" } } } }
+      ]
+    },
+    {
+      "name": "mint_stablecoin",
+      "discriminator": [196, 235, 215, 70, 211, 5, 214, 238],
+      "accounts": [
+        { "name": "user", "writable": true, "signer": true },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "fee_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [102, 101, 101, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "vault_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [118, 97, 117, 108, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "stablecoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "fee_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "lst_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "lst_header",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [108, 115, 116, 95, 104, 101, 97, 100, 101, 114] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "user_lst_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "user_stablecoin_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        { "name": "lst_mint" },
+        {
+          "name": "stablecoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 85, 83, 68] }] },
+          "relations": ["hylo"]
+        },
+        { "name": "sol_usd_pyth_feed" },
+        { "name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        { "name": "associated_token_program", "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [
+        { "name": "amount_lst_to_deposit", "type": "u64" },
+        { "name": "slippage_config", "type": { "option": { "defined": { "name": "SlippageConfig" } } } }
+      ]
+    },
+    {
+      "name": "redeem_levercoin",
+      "discriminator": [132, 166, 215, 32, 46, 131, 174, 44],
+      "accounts": [
+        { "name": "user", "writable": true, "signer": true },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "fee_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [102, 101, 101, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "vault_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [118, 97, 117, 108, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "levercoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "levercoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "fee_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "lst_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "lst_header",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [108, 115, 116, 95, 104, 101, 97, 100, 101, 114] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "user_levercoin_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "levercoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "user_lst_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "levercoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [120, 83, 79, 76] }] },
+          "relations": ["hylo"]
+        },
+        {
+          "name": "stablecoin_mint",
+          "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 85, 83, 68] }] },
+          "relations": ["hylo"]
+        },
+        { "name": "lst_mint" },
+        { "name": "sol_usd_pyth_feed" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" },
+        { "name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        { "name": "associated_token_program", "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [
+        { "name": "amount_to_redeem", "type": "u64" },
+        { "name": "slippage_config", "type": { "option": { "defined": { "name": "SlippageConfig" } } } }
+      ]
+    },
+    {
+      "name": "redeem_stablecoin",
+      "discriminator": [69, 46, 6, 97, 170, 130, 160, 237],
+      "accounts": [
+        { "name": "user", "writable": true, "signer": true },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "fee_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [102, 101, 101, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "vault_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [118, 97, 117, 108, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "stablecoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "fee_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "lst_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "lst_header",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [108, 115, 116, 95, 104, 101, 97, 100, 101, 114] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "user_stablecoin_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "user_lst_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "stablecoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 85, 83, 68] }] },
+          "relations": ["hylo"]
+        },
+        { "name": "lst_mint" },
+        { "name": "sol_usd_pyth_feed" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" },
+        { "name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        { "name": "associated_token_program", "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [
+        { "name": "amount_to_redeem", "type": "u64" },
+        { "name": "slippage_config", "type": { "option": { "defined": { "name": "SlippageConfig" } } } }
+      ]
+    },
+    {
+      "name": "register_lst",
+      "discriminator": [167, 114, 254, 24, 190, 221, 82, 107],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "lst_header",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [108, 115, 116, 95, 104, 101, 97, 100, 101, 114] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [102, 101, 101, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "vault_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [118, 97, 117, 108, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "lst_mint" }
+            ]
+          }
+        },
+        {
+          "name": "registry_auth",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 115, 116, 95, 114, 101, 103, 105, 115, 116, 114, 121, 95, 97, 117, 116, 104]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "fee_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "lst_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "vault_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "lst_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        { "name": "lst_mint" },
+        { "name": "lst_registry", "writable": true, "relations": ["hylo"] },
+        { "name": "lst_stake_pool_state" },
+        { "name": "sanctum_calculator_program" },
+        { "name": "sanctum_calculator_state" },
+        { "name": "stake_pool_program_data" },
+        { "name": "stake_pool_program" },
+        { "name": "lut_program", "address": "AddressLookupTab1e1111111111111111111111111" },
+        { "name": "associated_token_program", "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" },
+        { "name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": []
+    },
+    {
+      "name": "swap_lever_to_stable",
+      "discriminator": [167, 111, 84, 179, 69, 7, 135, 48],
+      "accounts": [
+        { "name": "user", "writable": true, "signer": true },
+        { "name": "hylo", "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        { "name": "sol_usd_pyth_feed" },
+        {
+          "name": "stablecoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 85, 83, 68] }] },
+          "relations": ["hylo"]
+        },
+        {
+          "name": "stablecoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [102, 101, 101, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "fee_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "user_stablecoin_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "levercoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [120, 83, 79, 76] }] },
+          "relations": ["hylo"]
+        },
+        {
+          "name": "levercoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "levercoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "user_levercoin_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "levercoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        { "name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [{ "name": "amount_levercoin", "type": "u64" }],
+      "returns": { "defined": { "name": "SwapLeverToStableEventV1" } }
+    },
+    {
+      "name": "swap_stable_to_lever",
+      "discriminator": [123, 194, 84, 140, 192, 193, 193, 161],
+      "accounts": [
+        { "name": "user", "writable": true, "signer": true },
+        { "name": "hylo", "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        { "name": "sol_usd_pyth_feed" },
+        {
+          "name": "stablecoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 85, 83, 68] }] },
+          "relations": ["hylo"]
+        },
+        {
+          "name": "stablecoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [102, 101, 101, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "fee_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "user_stablecoin_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "stablecoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "levercoin_mint",
+          "writable": true,
+          "pda": { "seeds": [{ "kind": "const", "value": [120, 83, 79, 76] }] },
+          "relations": ["hylo"]
+        },
+        {
+          "name": "levercoin_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [109, 105, 110, 116, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "levercoin_mint" }
+            ]
+          }
+        },
+        {
+          "name": "user_levercoin_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "user" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "levercoin_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        { "name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [{ "name": "amount_stablecoin", "type": "u64" }],
+      "returns": { "defined": { "name": "SwapStableToLeverEventV1" } }
+    },
+    {
+      "name": "update_admin",
+      "discriminator": [161, 176, 40, 213, 60, 184, 179, 228],
+      "accounts": [
+        { "name": "payer", "writable": true, "signer": true },
+        { "name": "upgrade_authority", "signer": true },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        { "name": "program_data" },
+        { "name": "hylo_exchange", "address": "HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [{ "name": "new_admin", "type": "pubkey" }]
+    },
+    {
+      "name": "update_levercoin_fees",
+      "discriminator": [183, 123, 195, 23, 63, 151, 104, 31],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [{ "name": "new_levercoin_fees", "type": { "defined": { "name": "LevercoinFees" } } }]
+    },
+    {
+      "name": "update_lst_prices",
+      "discriminator": [3, 34, 88, 178, 240, 40, 85, 148],
+      "accounts": [
+        { "name": "payer", "writable": true, "signer": true },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        { "name": "lst_registry", "writable": true, "relations": ["hylo"] },
+        { "name": "lut_program", "address": "AddressLookupTab1e1111111111111111111111111" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_oracle_conf_tolerance",
+      "discriminator": [59, 81, 210, 112, 245, 81, 187, 151],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [{ "name": "new_oracle_conf_tolerance", "type": { "defined": { "name": "UFixValue64" } } }]
+    },
+    {
+      "name": "update_oracle_interval",
+      "discriminator": [67, 242, 44, 246, 210, 94, 99, 214],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [{ "name": "new_oracle_interval_secs", "type": "u64" }]
+    },
+    {
+      "name": "update_stability_pool",
+      "discriminator": [241, 157, 233, 64, 49, 184, 93, 137],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [{ "name": "new_stability_pool", "type": "pubkey" }]
+    },
+    {
+      "name": "update_stability_thresholds",
+      "discriminator": [250, 58, 160, 105, 52, 84, 93, 167],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [
+        { "name": "new_stability_threshold_1", "type": { "defined": { "name": "UFixValue64" } } },
+        { "name": "new_stability_threshold_2", "type": { "defined": { "name": "UFixValue64" } } }
+      ]
+    },
+    {
+      "name": "update_stablecoin_fees",
+      "discriminator": [49, 74, 146, 60, 3, 38, 96, 4],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [{ "name": "new_stablecoin_fees", "type": { "defined": { "name": "StablecoinFees" } } }]
+    },
+    {
+      "name": "update_treasury",
+      "discriminator": [60, 16, 243, 66, 96, 59, 254, 131],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [{ "name": "new_treasury", "type": "pubkey" }]
+    },
+    {
+      "name": "update_yield_harvest_config",
+      "discriminator": [140, 91, 46, 213, 44, 179, 201, 32],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "hylo", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": [{ "name": "new_yield_harvest_config", "type": { "defined": { "name": "YieldHarvestConfig" } } }]
+    },
+    {
+      "name": "withdraw_fees",
+      "discriminator": [198, 212, 171, 109, 144, 215, 174, 89],
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true, "relations": ["hylo"] },
+        { "name": "treasury", "writable": true, "relations": ["hylo"] },
+        { "name": "hylo", "pda": { "seeds": [{ "kind": "const", "value": [104, 121, 108, 111] }] } },
+        {
+          "name": "fee_auth",
+          "pda": {
+            "seeds": [
+              { "kind": "const", "value": [102, 101, 101, 95, 97, 117, 116, 104] },
+              { "kind": "account", "path": "fee_token_mint" }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "fee_auth" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "fee_token_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        {
+          "name": "treasury_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              { "kind": "account", "path": "treasury" },
+              {
+                "kind": "const",
+                "value": [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95,
+                  91, 55, 145, 58, 140, 245, 133, 126, 255, 0, 169
+                ]
+              },
+              { "kind": "account", "path": "fee_token_mint" }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16,
+                132, 4, 142, 123, 216, 219, 233, 248, 89
+              ]
+            }
+          }
+        },
+        { "name": "fee_token_mint" },
+        { "name": "associated_token_program", "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" },
+        { "name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        { "name": "system_program", "address": "11111111111111111111111111111111" },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111, 114, 105, 116, 121]
+              }
+            ]
+          }
+        },
+        { "name": "program" }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    { "name": "Hylo", "discriminator": [114, 161, 169, 210, 204, 175, 149, 174] },
+    { "name": "LstHeader", "discriminator": [125, 135, 217, 151, 122, 202, 138, 59] },
+    { "name": "PriceUpdateV2", "discriminator": [34, 241, 35, 99, 157, 126, 244, 205] }
+  ],
+  "events": [
+    { "name": "ExchangeStats", "discriminator": [74, 24, 38, 211, 126, 124, 214, 158] },
+    { "name": "HarvestYieldEvent", "discriminator": [164, 43, 118, 208, 1, 71, 104, 111] },
+    { "name": "MintLevercoinEventV0", "discriminator": [71, 135, 154, 151, 170, 173, 218, 125] },
+    { "name": "MintLevercoinEventV1", "discriminator": [77, 221, 3, 200, 106, 110, 9, 245] },
+    { "name": "MintLevercoinEventV2", "discriminator": [153, 16, 148, 142, 11, 127, 114, 15] },
+    { "name": "MintStablecoinEventV0", "discriminator": [181, 185, 32, 71, 11, 248, 162, 100] },
+    { "name": "MintStablecoinEventV1", "discriminator": [102, 41, 35, 191, 18, 74, 142, 16] },
+    { "name": "MintStablecoinEventV2", "discriminator": [173, 104, 166, 28, 0, 52, 94, 246] },
+    { "name": "RedeemLevercoinEventV0", "discriminator": [92, 186, 13, 68, 23, 219, 194, 81] },
+    { "name": "RedeemLevercoinEventV1", "discriminator": [44, 209, 148, 186, 40, 214, 48, 242] },
+    { "name": "RedeemLevercoinEventV2", "discriminator": [136, 249, 79, 60, 114, 254, 234, 38] },
+    { "name": "RedeemStablecoinEventV0", "discriminator": [98, 11, 53, 77, 188, 71, 107, 168] },
+    { "name": "RedeemStablecoinEventV1", "discriminator": [172, 179, 174, 150, 249, 177, 177, 201] },
+    { "name": "RedeemStablecoinEventV2", "discriminator": [36, 163, 198, 40, 252, 128, 99, 179] },
+    { "name": "RegisterLstEvent", "discriminator": [67, 129, 63, 97, 144, 52, 195, 33] },
+    { "name": "SwapLeverToStableEventV0", "discriminator": [50, 170, 61, 23, 136, 163, 174, 145] },
+    { "name": "SwapLeverToStableEventV1", "discriminator": [201, 228, 47, 118, 19, 214, 21, 45] },
+    { "name": "SwapStableToLeverEventV0", "discriminator": [134, 28, 79, 7, 117, 57, 126, 174] },
+    { "name": "SwapStableToLeverEventV1", "discriminator": [184, 185, 154, 14, 36, 128, 241, 53] },
+    { "name": "UpdateAdminEvent", "discriminator": [225, 152, 171, 87, 246, 63, 66, 234] },
+    { "name": "UpdateLevercoinFeesEvent", "discriminator": [84, 176, 60, 195, 204, 115, 242, 169] },
+    { "name": "UpdateLstPricesEvent", "discriminator": [104, 0, 189, 118, 195, 155, 77, 151] },
+    { "name": "UpdateOracleConfEvent", "discriminator": [190, 89, 82, 192, 231, 31, 206, 91] },
+    { "name": "UpdateOracleIntervalEvent", "discriminator": [190, 132, 209, 41, 79, 137, 195, 226] },
+    { "name": "UpdateStabilityPoolEvent", "discriminator": [220, 82, 162, 130, 152, 212, 135, 63] },
+    { "name": "UpdateStabilityThresholdsEvent", "discriminator": [36, 117, 167, 25, 25, 39, 46, 189] },
+    { "name": "UpdateStablecoinFeesEvent", "discriminator": [38, 140, 45, 231, 238, 94, 115, 249] },
+    { "name": "UpdateTreasuryEvent", "discriminator": [104, 210, 213, 227, 230, 150, 146, 19] },
+    { "name": "UpdateYieldHarvestConfigEvent", "discriminator": [67, 168, 96, 20, 78, 117, 245, 206] },
+    { "name": "WithdrawFeesEvent", "discriminator": [236, 118, 138, 90, 139, 173, 177, 89] }
+  ],
+  "errors": [
+    { "code": 6000, "name": "OracleOutdated", "msg": "Oracle did not yield a price within the configured age window." },
+    {
+      "code": 6001,
+      "name": "OracleExponent",
+      "msg": "Failed to scale native oracle decimal type to expected exponent."
+    },
+    { "code": 6002, "name": "OracleNegativePrice", "msg": "Oracle yielded a negative price which can't be unsigned." },
+    {
+      "code": 6003,
+      "name": "OraclePriceRange",
+      "msg": "Calculation under/overflow while computing oracle price range."
+    },
+    { "code": 6004, "name": "OracleSlotInvalid", "msg": "Oracle publish slot greater than current slot." },
+    { "code": 6005, "name": "OracleNegativeTime", "msg": "Encountered a negative clock or oracle publish time." },
+    { "code": 6006, "name": "OracleVerificationLevel", "msg": "Oracle price update is not fully verified." },
+    { "code": 6007, "name": "OracleConfidence", "msg": "Confidence interval on price update exceeded tolerance." },
+    { "code": 6008, "name": "LevercoinNav", "msg": "Arithmetic error while computing levercoin NAV." },
+    {
+      "code": 6009,
+      "name": "LevercoinRedeemDisabled",
+      "msg": "Cannot redeem levercoin due to stability mode. NAV would be 0 or lower."
+    },
+    { "code": 6010, "name": "StablecoinNav", "msg": "Arithmetic error while computing depegged stablecoin NAV." },
+    { "code": 6011, "name": "LstToToken", "msg": "Arithmetic error in conversion from LST to protocol token." },
+    { "code": 6012, "name": "TokenToLst", "msg": "Arithmetic error in conversion from protocol token to LST." },
+    { "code": 6013, "name": "StableToLever", "msg": "Arithmetic error in conversion from stablecoin to levercoin." },
+    { "code": 6014, "name": "LeverToStable", "msg": "Arithmetic error in conversion from levercoin to stablecoin." },
+    {
+      "code": 6015,
+      "name": "LeverToStableDisabled",
+      "msg": "Levercoin to stablecoin swap disabled due to stability mode."
+    },
+    {
+      "code": 6016,
+      "name": "StableToLeverDisabled",
+      "msg": "Stablecoin to levercoin swap disabled due to stability mode."
+    },
+    { "code": 6017, "name": "SanctumCpi", "msg": "Error during CPI to Sanctum LST/SOL calculator." },
+    {
+      "code": 6018,
+      "name": "LstRegistryEmpty",
+      "msg": "LST specific accounts found empty when attempting to load registry."
+    },
+    {
+      "code": 6019,
+      "name": "LstRegistryPreamble",
+      "msg": "Sanctum calculator contexts in LST registry preamble are malformed."
+    },
+    { "code": 6020, "name": "LstRegistryLookupTableDeser", "msg": "Failed to deserialize registry lookup table." },
+    {
+      "code": 6021,
+      "name": "LstRegistryLookupTableInvalid",
+      "msg": "Contents of LST registry did not match remaining_accounts."
+    },
+    {
+      "code": 6022,
+      "name": "LstBlockInvalid",
+      "msg": "Mint/vault/pool accounts in registry block do not match header."
+    },
+    {
+      "code": 6023,
+      "name": "LstContextInvalid",
+      "msg": "Attempted to register an LST with invalid Sanctum context accounts."
+    },
+    {
+      "code": 6024,
+      "name": "LstAdditionOverflow",
+      "msg": "Addition overflow while computing total SOL in LST registry."
+    },
+    {
+      "code": 6025,
+      "name": "LstPriceOutdated",
+      "msg": "Cached LST price not from current epoch. Run pricing crank to update."
+    },
+    {
+      "code": 6026,
+      "name": "LstPriceDelta",
+      "msg": "Failed to compute delta between current and previous LST prices."
+    },
+    { "code": 6027, "name": "LstPriceEpochsInvalid", "msg": "Found current epoch less than previous in LST header." },
+    { "code": 6028, "name": "LstSolAppreciation", "msg": "Overflow while computing LST SOL appreciation." },
+    { "code": 6029, "name": "LstSolConversion", "msg": "Overflow while computing LST SOL price conversion." },
+    { "code": 6030, "name": "FeeExtraction", "msg": "Over/underflow while computing fee extraction for transaction." },
+    { "code": 6031, "name": "CollateralRatio", "msg": "Overflow while computing collateral ratio." },
+    { "code": 6032, "name": "TotalValueLocked", "msg": "Overflow while computing total value locked in USD." },
+    {
+      "code": 6033,
+      "name": "StablecoinMintDisabled",
+      "msg": "Stablecoin mint disabled. Protoocol is in Mode2 or Depeg."
+    },
+    { "code": 6034, "name": "LevercoinMintDisabled", "msg": "Levercoin mint disabled. Protocol is in Depeg." },
+    {
+      "code": 6035,
+      "name": "RequestedStablecoinOverMaxMintable",
+      "msg": "Requested amount of stablecoin over max mintable limit."
+    },
+    { "code": 6036, "name": "StabilityValidation", "msg": "Stability modes failed validation." },
+    {
+      "code": 6037,
+      "name": "YieldHarvestConfigValidation",
+      "msg": "Yield harvest configuration percentages failed validation."
+    },
+    { "code": 6038, "name": "YieldHarvestDisabled", "msg": "Yield harvest disabled due to protocol collateral ratio." },
+    {
+      "code": 6039,
+      "name": "YieldHarvestAllocation",
+      "msg": "Arithmetic error while computing yield harvest allocation."
+    },
+    { "code": 6040, "name": "YieldHarvestEpoch", "msg": "Yield harvest already occurred during this epoch." },
+    {
+      "code": 6041,
+      "name": "StabilityPoolCap",
+      "msg": "Arithmetic error while computing stablecoin + levercoin cap in stability \\\n     pool."
+    },
+    { "code": 6042, "name": "MaxMintable", "msg": "Arithmetic error while computing max mintable stablecoin." },
+    { "code": 6043, "name": "MaxSwappable", "msg": "Arithmetic error while computing max swappable stablecoin." },
+    {
+      "code": 6044,
+      "name": "TargetCollateralRatioTooLow",
+      "msg": "Unable to compute max mintable stablecoin with target CR < 1."
+    },
+    {
+      "code": 6045,
+      "name": "NoValidStablecoinMintFee",
+      "msg": "No valid mint fee for stablecoin. Projected stability mode is Mode2 or \\\n     Depeg."
+    },
+    {
+      "code": 6046,
+      "name": "NoValidLevercoinMintFee",
+      "msg": "No valid mint fee for levercoin. Projected stability mode is Depeg."
+    },
+    {
+      "code": 6047,
+      "name": "NoValidSwapFee",
+      "msg": "No valid fee for lever/stable or stable/lever swap. Projected stability \\\n     mode Mode2 or Depeg."
+    },
+    { "code": 6048, "name": "NoValidLevercoinRedeemFee", "msg": "No valid redeem fee for levercoin due to Depeg." },
+    {
+      "code": 6049,
+      "name": "NoNextStabilityThreshold",
+      "msg": "There is no next stability threshold; current mode is Depeg."
+    },
+    {
+      "code": 6050,
+      "name": "CannotIncrementTotalSolCache",
+      "msg": "Cannot increment TotalSolCache due to epoch difference. Run price update \\\n     crank to reset."
+    },
+    {
+      "code": 6051,
+      "name": "CannotDecrementTotalSolCache",
+      "msg": "Cannot decrement TotalSolCache due to epoch difference. Run price update \\\n     crank to reset."
+    },
+    { "code": 6052, "name": "IncrementOverflowTotalSolCache", "msg": "Increment overflow in TotalSolCache." },
+    { "code": 6053, "name": "DecrementUnderflowTotalSolCache", "msg": "Decrement underflow in TotalSolCache." },
+    {
+      "code": 6054,
+      "name": "OutdatedTotalSolCache",
+      "msg": "TotalSolCache is not valid for the current epoch. Run price update crank \\\n     to reset."
+    },
+    {
+      "code": 6055,
+      "name": "DestinationFeeSol",
+      "msg": "Over/underflow while computing total SOL for destination fee."
+    },
+    {
+      "code": 6056,
+      "name": "DestinationFeeStablecoin",
+      "msg": "Over/underflow while computing total stablecoin for destination fee."
+    },
+    { "code": 6057, "name": "ZeroRedeem", "msg": "Cannot withdraw amount of 0 in a redemption action." },
+    { "code": 6058, "name": "ZeroMint", "msg": "Cannot deposit amount of 0 in a minting action." },
+    { "code": 6059, "name": "ZeroSwap", "msg": "Cannot swap amount of 0." },
+    { "code": 6060, "name": "SlippageArithmetic", "msg": "Over/underflow while computing acceptable token amount." },
+    { "code": 6061, "name": "SlippageExceeded", "msg": "Token output amount exceeds provided slippage configuration." }
+  ],
+  "types": [
+    {
+      "name": "ExchangeStats",
+      "docs": ["Stats"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "total_value_locked", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stablecoin_nav", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stablecoin_supply", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "levercoin_nav", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "levercoin_supply", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_ratio", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stability_mode", "type": { "defined": { "name": "StabilityMode" } } },
+          { "name": "yield_harvest_cache", "type": { "defined": { "name": "YieldHarvestCache" } } }
+        ]
+      }
+    },
+    {
+      "name": "FeePair",
+      "docs": [
+        "Represents the spread of fees between mint and redeem for protocol tokens.",
+        "All fees must be in basis points to represent a fractional percentage",
+        "directly applicable to a token amount e.g. `0.XXXX` or `bips x 10^-4`."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "mint", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "redeem", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "HarvestYieldEvent",
+      "docs": ["Cranks"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "harvestable_stablecoin", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "fees_extracted", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stablecoin_to_pool", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "sol_usd_price", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "Hylo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "admin", "type": "pubkey" },
+          { "name": "treasury", "type": "pubkey" },
+          { "name": "lst_registry", "type": "pubkey" },
+          { "name": "stablecoin_mint", "type": "pubkey" },
+          { "name": "levercoin_mint", "type": "pubkey" },
+          { "name": "stability_pool", "type": "pubkey" },
+          { "name": "stablecoin_mint_bump", "type": "u8" },
+          { "name": "stablecoin_auth_bump", "type": "u8" },
+          { "name": "levercoin_mint_bump", "type": "u8" },
+          { "name": "levercoin_auth_bump", "type": "u8" },
+          { "name": "registry_auth_bump", "type": "u8" },
+          { "name": "total_sol_cache_bump", "type": "u8" },
+          { "name": "oracle_interval_secs", "type": "u64" },
+          { "name": "stablecoin_fees", "type": { "defined": { "name": "StablecoinFees" } } },
+          { "name": "levercoin_fees", "type": { "defined": { "name": "LevercoinFees" } } },
+          { "name": "total_sol_cache", "type": { "defined": { "name": "TotalSolCache" } } },
+          { "name": "yield_harvest_cache", "type": { "defined": { "name": "YieldHarvestCache" } } },
+          { "name": "yield_harvest_config", "type": { "defined": { "name": "YieldHarvestConfig" } } },
+          { "name": "stability_threshold_1", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stability_threshold_2", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "oracle_conf_tolerance", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "_reserved", "type": { "array": ["u8", 119] } }
+        ]
+      }
+    },
+    {
+      "name": "LevercoinFees",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "normal", "type": { "defined": { "name": "FeePair" } } },
+          { "name": "mode_1", "type": { "defined": { "name": "FeePair" } } },
+          { "name": "mode_2", "type": { "defined": { "name": "FeePair" } } }
+        ]
+      }
+    },
+    {
+      "name": "LstHeader",
+      "docs": [
+        "Header for a specific LST. Should be the first entry in the block of",
+        "accounts, and contains references to the rest of the accounts."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "mint", "type": "pubkey" },
+          { "name": "vault", "type": "pubkey" },
+          { "name": "pool_state", "type": "pubkey" },
+          { "name": "stake_program", "type": { "defined": { "name": "LstStakePoolProgram" } } },
+          { "name": "prev_price_sol", "type": { "defined": { "name": "LstSolPrice" } } },
+          { "name": "price_sol", "type": { "defined": { "name": "LstSolPrice" } } },
+          { "name": "last_yield_harvest_epoch", "type": "u64" },
+          { "name": "_reserved", "type": { "array": ["u8", 64] } }
+        ]
+      }
+    },
+    {
+      "name": "LstSolPrice",
+      "docs": ["Captures the true LST price in SOL for the current epoch."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "epoch", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "LstStakePoolProgram",
+      "type": {
+        "kind": "enum",
+        "variants": [{ "name": "Spl" }, { "name": "SanctumSpl" }, { "name": "SanctumSplMulti" }, { "name": "Marinade" }]
+      }
+    },
+    {
+      "name": "MintLevercoinEventV0",
+      "docs": ["`MintLevercoin`"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "minted", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "total_supply", "type": "u64" },
+          { "name": "sol_usd_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_deposited", "type": "u64" },
+          { "name": "collateral_ratio", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "MintLevercoinEventV1",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "minted", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "MintLevercoinEventV2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "minted", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "sol_usd_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "lst_mint", "type": "pubkey" },
+          { "name": "lst_sol_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_deposited", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "fees_deposited", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "MintStablecoinEventV0",
+      "docs": ["`MintStablecoin`"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "minted", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "total_supply", "type": "u64" },
+          { "name": "sol_usd_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_deposited", "type": "u64" },
+          { "name": "collateral_ratio", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "MintStablecoinEventV1",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "minted", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "MintStablecoinEventV2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "minted", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "sol_usd_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "lst_mint", "type": "pubkey" },
+          { "name": "lst_sol_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_deposited", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "fees_deposited", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "PriceFeedMessage",
+      "repr": { "kind": "c" },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "feed_id",
+            "docs": [
+              "`FeedId` but avoid the type alias because of compatibility issues with Anchor's `idl-build` feature."
+            ],
+            "type": { "array": ["u8", 32] }
+          },
+          { "name": "price", "type": "i64" },
+          { "name": "conf", "type": "u64" },
+          { "name": "exponent", "type": "i32" },
+          { "name": "publish_time", "docs": ["The timestamp of this price update in seconds"], "type": "i64" },
+          {
+            "name": "prev_publish_time",
+            "docs": [
+              "The timestamp of the previous price update. This field is intended to allow users to",
+              "identify the single unique price update for any moment in time:",
+              "for any time t, the unique update is the one such that prev_publish_time < t <= publish_time.",
+              "",
+              "Note that there may not be such an update while we are migrating to the new message-sending logic,",
+              "as some price updates on pythnet may not be sent to other chains (because the message-sending",
+              "logic may not have triggered). We can solve this problem by making the message-sending mandatory",
+              "(which we can do once publishers have migrated over).",
+              "",
+              "Additionally, this field may be equal to publish_time if the message is sent on a slot where",
+              "where the aggregation was unsuccesful. This problem will go away once all publishers have",
+              "migrated over to a recent version of pyth-agent."
+            ],
+            "type": "i64"
+          },
+          { "name": "ema_price", "type": "i64" },
+          { "name": "ema_conf", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "PriceUpdateV2",
+      "docs": [
+        "A price update account. This account is used by the Pyth Receiver program to store a verified price update from a Pyth price feed.",
+        "It contains:",
+        "- `write_authority`: The write authority for this account. This authority can close this account to reclaim rent or update the account to contain a different price update.",
+        "- `verification_level`: The [`VerificationLevel`] of this price update. This represents how many Wormhole guardian signatures have been verified for this price update.",
+        "- `price_message`: The actual price update.",
+        "- `posted_slot`: The slot at which this price update was posted."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "write_authority", "type": "pubkey" },
+          { "name": "verification_level", "type": { "defined": { "name": "VerificationLevel" } } },
+          { "name": "price_message", "type": { "defined": { "name": "PriceFeedMessage" } } },
+          { "name": "posted_slot", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "RedeemLevercoinEventV0",
+      "docs": ["`RedeemLevercoin`"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "redeemed", "type": "u64" },
+          { "name": "total_supply", "type": "u64" },
+          { "name": "sol_usd_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_withdrawn", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_ratio", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "RedeemLevercoinEventV1",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "redeemed", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "RedeemLevercoinEventV2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "redeemed", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "sol_usd_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "lst_mint", "type": "pubkey" },
+          { "name": "lst_sol_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_withdrawn", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "fees_deposited", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "RedeemStablecoinEventV0",
+      "docs": ["`RedeemStablecoin`"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "redeemed", "type": "u64" },
+          { "name": "total_supply", "type": "u64" },
+          { "name": "sol_usd_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_withdrawn", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_ratio", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "RedeemStablecoinEventV1",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "redeemed", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "RedeemStablecoinEventV2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "redeemed", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "nav", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "sol_usd_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "lst_mint", "type": "pubkey" },
+          { "name": "lst_sol_price", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "collateral_withdrawn", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "fees_deposited", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "RegisterLstEvent",
+      "docs": ["Admin"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "header", "type": "pubkey" },
+          { "name": "mint", "type": "pubkey" },
+          { "name": "vault", "type": "pubkey" },
+          { "name": "pool_state", "type": "pubkey" }
+        ]
+      }
+    },
+    {
+      "name": "SlippageConfig",
+      "docs": ["Client specified slippage tolerance paired with expected token amount."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "expected_token_out", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "slippage_tolerance", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "StabilityMode",
+      "docs": ["Mode of operation based on the protocol's current collateral ratio.", "See whitepaper for more."],
+      "type": {
+        "kind": "enum",
+        "variants": [{ "name": "Normal" }, { "name": "Mode1" }, { "name": "Mode2" }, { "name": "Depeg" }]
+      }
+    },
+    {
+      "name": "StablecoinFees",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "normal", "type": { "defined": { "name": "FeePair" } } },
+          { "name": "mode_1", "type": { "defined": { "name": "FeePair" } } }
+        ]
+      }
+    },
+    {
+      "name": "SwapLeverToStableEventV0",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "levercoin_burned", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stablecoin_minted", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "SwapLeverToStableEventV1",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "levercoin_burned", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "levercoin_nav", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stablecoin_minted_user", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stablecoin_minted_fees", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stablecoin_nav", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "SwapStableToLeverEventV0",
+      "docs": ["Swaps"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "stablecoin_burned", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "levercoin_minted", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "SwapStableToLeverEventV1",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "stablecoin_burned", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stablecoin_fees", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stablecoin_nav", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "levercoin_minted", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "levercoin_nav", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "TotalSolCache",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "current_update_epoch", "type": "u64" },
+          { "name": "total_sol", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "UFixValue64",
+      "docs": [
+        "A value-space `Fix` where base is always 10 and bits are a concrete type.",
+        "Intended for serialized storage in Solana accounts where generics won't work."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "bits", "type": "u64" },
+          { "name": "exp", "type": "i8" }
+        ]
+      }
+    },
+    {
+      "name": "UpdateAdminEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "old_admin", "type": "pubkey" },
+          { "name": "new_admin", "type": "pubkey" }
+        ]
+      }
+    },
+    {
+      "name": "UpdateLevercoinFeesEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "old_levercoin_fees", "type": { "defined": { "name": "LevercoinFees" } } },
+          { "name": "new_levercoin_fees", "type": { "defined": { "name": "LevercoinFees" } } }
+        ]
+      }
+    },
+    {
+      "name": "UpdateLstPricesEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "updated_mints", "type": { "vec": "pubkey" } },
+          { "name": "new_total_sol", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "UpdateOracleConfEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "old_oracle_conf_tolerance", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "new_oracle_conf_tolerance", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "UpdateOracleIntervalEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "old_oracle_interval_secs", "type": "u64" },
+          { "name": "new_oracle_interval_secs", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "UpdateStabilityPoolEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "old_stability_pool", "type": "pubkey" },
+          { "name": "new_stability_pool", "type": "pubkey" }
+        ]
+      }
+    },
+    {
+      "name": "UpdateStabilityThresholdsEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "old_stability_threshold_1", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "old_stability_threshold_2", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "new_stability_threshold_1", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "new_stability_threshold_2", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "UpdateStablecoinFeesEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "old_stablecoin_fees", "type": { "defined": { "name": "StablecoinFees" } } },
+          { "name": "new_stablecoin_fees", "type": { "defined": { "name": "StablecoinFees" } } }
+        ]
+      }
+    },
+    {
+      "name": "UpdateTreasuryEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "old_treasury", "type": "pubkey" },
+          { "name": "new_treasury", "type": "pubkey" }
+        ]
+      }
+    },
+    {
+      "name": "UpdateYieldHarvestConfigEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "old_yield_harvest_config", "type": { "defined": { "name": "YieldHarvestConfig" } } },
+          { "name": "new_yield_harvest_config", "type": { "defined": { "name": "YieldHarvestConfig" } } }
+        ]
+      }
+    },
+    {
+      "name": "VerificationLevel",
+      "docs": [
+        "Pyth price updates are bridged to all blockchains via Wormhole.",
+        "Using the price updates on another chain requires verifying the signatures of the Wormhole guardians.",
+        "The usual process is to check the signatures for two thirds of the total number of guardians, but this can be cumbersome on Solana because of the transaction size limits,",
+        "so we also allow for partial verification.",
+        "",
+        "This enum represents how much a price update has been verified:",
+        "- If `Full`, we have verified the signatures for two thirds of the current guardians.",
+        "- If `Partial`, only `num_signatures` guardian signatures have been checked.",
+        "",
+        "# Warning",
+        "Using partially verified price updates is dangerous, as it lowers the threshold of guardians that need to collude to produce a malicious price update."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [{ "name": "Partial", "fields": [{ "name": "num_signatures", "type": "u8" }] }, { "name": "Full" }]
+      }
+    },
+    {
+      "name": "WithdrawFeesEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "mint", "type": "pubkey" },
+          { "name": "vault", "type": "pubkey" },
+          { "name": "treasury_ata", "type": "pubkey" },
+          { "name": "amount", "type": "u64" }
+        ]
+      }
+    },
+    {
+      "name": "YieldHarvestCache",
+      "docs": ["Records epoch yield harvest information for off-chain consumers."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "epoch", "type": "u64" },
+          { "name": "stability_pool_cap", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "stablecoin_yield_to_pool", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    },
+    {
+      "name": "YieldHarvestConfig",
+      "docs": ["Captures yield harvest configuration as two basis point values:"],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "allocation", "type": { "defined": { "name": "UFixValue64" } } },
+          { "name": "fee", "type": { "defined": { "name": "UFixValue64" } } }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    { "name": "FEE_AUTH", "type": { "array": ["u8", 8] }, "value": "[102, 101, 101, 95, 97, 117, 116, 104]" },
+    { "name": "HYLO", "type": { "array": ["u8", 4] }, "value": "[104, 121, 108, 111]" },
+    { "name": "HYUSD", "type": { "array": ["u8", 5] }, "value": "[104, 121, 85, 83, 68]" },
+    {
+      "name": "LST_HEADER",
+      "type": { "array": ["u8", 10] },
+      "value": "[108, 115, 116, 95, 104, 101, 97, 100, 101, 114]"
+    },
+    {
+      "name": "LST_REGISTRY_AUTH",
+      "type": { "array": ["u8", 17] },
+      "value": "[108, 115, 116, 95, 114, 101, 103, 105, 115, 116, 114, 121, 95, 97, 117, 116, 104]"
+    },
+    { "name": "MINT_AUTH", "type": { "array": ["u8", 9] }, "value": "[109, 105, 110, 116, 95, 97, 117, 116, 104]" },
+    { "name": "POOL_AUTH", "type": { "array": ["u8", 9] }, "value": "[112, 111, 111, 108, 95, 97, 117, 116, 104]" },
+    {
+      "name": "VAULT_AUTH",
+      "type": { "array": ["u8", 10] },
+      "value": "[118, 97, 117, 108, 116, 95, 97, 117, 116, 104]"
+    },
+    { "name": "XSOL", "type": { "array": ["u8", 4] }, "value": "[120, 83, 79, 76]" }
+  ]
+}
