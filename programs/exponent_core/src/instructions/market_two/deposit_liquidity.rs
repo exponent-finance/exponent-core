@@ -147,6 +147,15 @@ impl<'i> DepositLiquidity<'i> {
             ExponentCoreError::DepositingLiquidityDisabled
         );
 
+        // The SY escrow is a temporary pass-through: any balance sitting in it
+        // means a previous flow did not fully settle, which would let LP tokens
+        // be minted against SY the market does not actually hold. Require both
+        // escrows to be empty before this deposit mints LP.
+        require!(
+            self.token_sy_escrow.amount == 0 && self.token_pt_escrow.amount == 0,
+            ExponentCoreError::EscrowNotEmpty
+        );
+
         Ok(())
     }
 }
@@ -167,6 +176,19 @@ pub fn handler<'info>(
     if r.lp_out < min_lp_out {
         return Err(ExponentCoreError::MinLpOutNotMet.into());
     }
+
+    // Enforce the LP supply cap before minting, so an over-cap mint is rejected
+    // by the slippage-style check rather than only by a post-mint audit.
+    require!(
+        ctx.accounts.market.check_supply_lp(
+            ctx.accounts
+                .mint_lp
+                .supply
+                .checked_add(r.lp_out)
+                .ok_or(ExponentCoreError::MathOverflow)?
+        ),
+        ExponentCoreError::LpSupplyMaximumExceeded
+    );
 
     ctx.accounts
         .market

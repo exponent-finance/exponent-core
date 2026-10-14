@@ -20,6 +20,10 @@ pub struct InitializeVault<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
 
+    #[account(
+        seeds = [exponent_admin::ADMIN_STORE_SEED],
+        bump
+    )]
     pub admin: Box<Account<'info, Admin>>,
 
     /// The signer for the vault
@@ -285,6 +289,7 @@ pub fn handler(
             ctx.accounts.vault.key().as_ref(),
             &[ctx.bumps.escrow_yt],
         ]],
+        &crate::ID,
     )?;
 
     msg!("Escrow YT created");

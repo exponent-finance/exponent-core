@@ -4,9 +4,15 @@ const DAY_SEC: u64 = 86400;
 const YEAR_SEC: u64 = DAY_SEC * 365;
 
 /// Get the proportion of PT in the market
+///
+/// Callers must pass the market's total PT and total asset reserves: the ratio
+/// `pt / (pt + asset)` is only meaningful as the market's PT share when both
+/// arguments describe the same market state, and callers of this crate rely on
+/// that invariant (e.g. `trade` computes `p` from the pre-trade totals).
 pub fn proportion_pt<N: Num>(pt: u64, asset: u64) -> N {
     let pt = N::from_u64(pt);
     let asset = N::from_u64(asset);
+
     pt / (pt + asset)
 }
 
@@ -65,6 +71,18 @@ pub fn rate_scalar_root<N: Num>(rate_expected: N, rate_max: N, tail_width: Optio
     // the tail width cannot be zero, nor greater than 1/2
     assert!(tail_width > N::zero() && tail_width < N::from_ratio(1, 2));
 
+    // The rate bounds bound the curve: rate_max must be above the expected rate,
+    // and the expected rate must be above 1 (otherwise the denominators below are
+    // zero and silently yield an infinite scalar root for the f64 backend).
+    assert!(
+        rate_max > rate_expected,
+        "rate_max must be greater than rate_expected"
+    );
+    assert!(
+        rate_expected > N::one(),
+        "rate_expected must be greater than 1"
+    );
+
     // small values of tail width will result in a large scalar root
     let s = ((N::one() - tail_width) / tail_width).ln();
 
@@ -105,8 +123,23 @@ pub fn ln_implied_rate<N: Num>(
     rate_anchor: N,
     sec_remaining: u64,
 ) -> N {
+    // At the expiration boundary the normalized time is zero, and dividing by it
+    // would produce inf/NaN for the f64 backend (or a panic for DNum). Mirror
+    // `rate_scalar` and treat the implied rate as unbounded in that case.
+    if sec_remaining == 0 {
+        return N::max();
+    }
+
     let l_p = logit(proportion_pt::<N>(pt, asset));
     let rate = exchange_rate::<N>(l_p, rate_scalar, rate_anchor);
+
+    // ln() of a non-positive rate is undefined and evaluates to NaN silently on
+    // the f64 backend, so reject it explicitly.
+    assert!(
+        rate > N::zero(),
+        "exchange rate must be positive to compute ln_implied_rate"
+    );
+
     let ln_rate = rate.ln();
     let normalized_sec_remaining = normalized_sec_remaining::<N>(sec_remaining);
 
@@ -135,6 +168,15 @@ pub fn add_liquidity<N: Num>(
     market_total_sy: u64,
     market_total_pt: u64,
 ) -> AddLiquidityResult {
+    // A market with zero reserves or zero LP supply has no meaningful share
+    // price: the ratios below divide by zero, which is inf for the f64 backend
+    // (and `to_u64` then saturates to u64::MAX, minting an unbounded LP supply).
+    // Reject a degenerate market instead of producing a nonsense result.
+    assert!(
+        market_total_lp > 0 && market_total_sy > 0 && market_total_pt > 0,
+        "market must have non-zero LP, SY and PT totals to add liquidity"
+    );
+
     let intent_sy = N::from_u64(intent_sy);
     let intent_pt = N::from_u64(intent_pt);
     let market_total_lp = N::from_u64(market_total_lp);
@@ -146,6 +188,18 @@ pub fn add_liquidity<N: Num>(
 
     if lp_from_pt < lp_from_sy {
         let lp_tokens_out = lp_from_pt;
+
+        // When one intent leg is zero, no LP tokens are owed. The ceil formulas
+        // below would still charge 1 unit of the other leg and mint nothing,
+        // silently donating value to the pool. Return an empty result instead.
+        if lp_tokens_out == N::zero() {
+            return AddLiquidityResult {
+                lp_tokens_out: 0,
+                sy_in: 0,
+                pt_in: 0,
+            };
+        }
+
         let pt_in = intent_pt.to_u64();
         let sy_in = ((market_total_sy * lp_tokens_out + market_total_lp - N::one())
             / market_total_lp)
@@ -158,6 +212,15 @@ pub fn add_liquidity<N: Num>(
         }
     } else {
         let lp_tokens_out = lp_from_sy;
+
+        if lp_tokens_out == N::zero() {
+            return AddLiquidityResult {
+                lp_tokens_out: 0,
+                sy_in: 0,
+                pt_in: 0,
+            };
+        }
+
         let sy_in = intent_sy.to_u64();
         let pt_in = ((market_total_pt * lp_tokens_out + market_total_lp - N::one())
             / market_total_lp)
@@ -184,6 +247,10 @@ pub fn rm_liquidity<N: Num>(
     market_total_pt: u64,
 ) -> RemoveLiquidityResult {
     assert!(market_total_lp >= lp_in);
+
+    // The share math divides by the market's LP total, so it must be non-zero.
+    assert!(market_total_lp > 0, "market LP total must be non-zero");
+
     let lp_in = N::from_u64(lp_in);
     let market_total_lp = N::from_u64(market_total_lp);
     let market_total_sy = N::from_u64(market_total_sy);
@@ -267,12 +334,25 @@ pub fn trade<N: Num>(
 ) -> TradeResult<N> {
     // assert that the user is selling PT into the market
     // or the market has more PT than the user is buying
-    assert!(net_trader_pt < N::zero() || market_pt > net_trader_pt.to_u64());
+    // (compared exactly, without truncating the trader's PT to an integer first)
+    assert!(
+        net_trader_pt < N::zero() || net_trader_pt < N::from_u64(market_pt),
+        "trader cannot buy more PT than the market holds"
+    );
 
     let market_pt = N::from_u64(market_pt);
     let new_pt = market_pt - net_trader_pt;
 
     let p = new_pt / (market_pt + N::from_u64(market_asset));
+
+    // p is fed into logit(), which divides by (1 - p) and takes a logarithm.
+    // p outside (0, 1) makes logit return inf or NaN, which the f64 backend
+    // propagates silently (a trader can then be paid exactly zero). Fail loudly.
+    assert!(
+        p > N::zero() && p < N::one(),
+        "post-trade PT proportion is out of the open interval (0, 1)"
+    );
+
     let l_p = logit(p);
     let er = exchange_rate(l_p, rate_scalar, rate_anchor);
 
