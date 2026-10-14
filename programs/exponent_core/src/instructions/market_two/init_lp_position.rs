@@ -7,8 +7,9 @@ pub struct InitLpPosition<'info> {
     #[account(mut)]
     pub fee_payer: Signer<'info>,
 
-    /// CHECK: none - this init handler is permissionless
-    pub owner: UncheckedAccount<'info>,
+    /// The position's owner. Must be a signer so nobody can pre-create (and
+    /// rent-grief) LP positions on behalf of arbitrary addresses.
+    pub owner: Signer<'info>,
 
     pub market: Box<Account<'info, MarketTwo>>,
 

@@ -28,7 +28,15 @@ impl DNum {
     }
 
     pub fn from_precise_number(pn: &Number) -> Self {
-        let mut num = pn.to_pn().value.as_u128();
+        // U256::as_u128 panics for values >= 2^128 with an opaque message, so
+        // reject out-of-range values explicitly first. `Number`'s Ord compares
+        // the underlying U256 words, and from_raw_u128(u128::MAX) is the largest
+        // Number whose raw representation still fits in u128.
+        assert!(
+            *pn <= Number::from_raw_u128(u128::MAX),
+            "Number out of DNum range (value does not fit in u128)"
+        );
+        let mut num = pn.raw_u128();
         let den = precise_number::Number::DENOM;
 
         // the numerator might be too big (greater than 96 bits)
@@ -237,7 +245,13 @@ impl Num for DNum {
 
     fn exp(&self) -> Self {
         Self {
-            value: self.value.exp(),
+            // rust_decimal's exp() is an approximation with ~2e-7 tolerance and
+            // panics on overflow; use the checked variant so the failure is
+            // explicit rather than an unchecked panic deep in the library.
+            value: self
+                .value
+                .checked_exp()
+                .expect("DNum::exp overflowed the Decimal range"),
         }
     }
 
@@ -254,6 +268,13 @@ impl Num for DNum {
     }
 
     fn from_ratio(numerator: u64, denominator: u64) -> Self {
+        // Decimal division by zero panics deep inside rust_decimal; reject it
+        // here with a message that names the caller's mistake.
+        assert!(
+            denominator != 0,
+            "DNum::from_ratio denominator must be non-zero"
+        );
+
         let value = Decimal::from_u64(numerator).unwrap() / Decimal::from_u64(denominator).unwrap();
 
         Self { value }

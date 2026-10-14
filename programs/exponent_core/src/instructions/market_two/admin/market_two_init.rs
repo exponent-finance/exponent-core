@@ -1,5 +1,6 @@
 use crate::{
     cpi_common::CpiAccounts,
+    error::ExponentCoreError,
     seeds::MARKET_SEED,
     utils::{cpi_init_sy_personal_account, do_deposit_sy},
     MarketTwo, Vault, ID,
@@ -104,6 +105,12 @@ pub struct MarketTwoInit<'info> {
     /// CHECK: high trust instruction
     pub address_lookup_table: UncheckedAccount<'info>,
 
+    /// Constrained to the canonical admin PDA so a rogue Admin account cannot
+    /// be substituted for the deployed one
+    #[account(
+        seeds = [exponent_admin::ADMIN_STORE_SEED],
+        bump
+    )]
     pub admin: Box<Account<'info, Admin>>,
 
     #[account(
@@ -191,6 +198,7 @@ impl<'i> MarketTwoInit<'i> {
             &self.system_program.to_account_info(),
             decimals,
             &[&[b"mint_lp", self.market.key().as_ref(), &[bump]]],
+            &ID,
         )
     }
 
@@ -212,6 +220,7 @@ impl<'i> MarketTwoInit<'i> {
             &self.system_program.to_account_info(),
             &self.token_program.to_account_info(),
             &[&[seed, self.market.key().as_ref(), &[bump]]],
+            &ID,
         )?;
 
         Ok(addr)
@@ -346,6 +355,14 @@ pub fn handler<'info>(
     // unique seed id for the market
     seed_id: u8,
 ) -> Result<()> {
+    // `Number` is a raw 256-bit instruction argument with no inherent range, so
+    // validate it here: a zero or absurd exchange rate silently corrupts every
+    // downstream vault and market calculation.
+    require!(
+        sy_exchange_rate > Number::ZERO && sy_exchange_rate < Number::from(1_000_000),
+        ExponentCoreError::InvalidSyExchangeRate
+    );
+
     // make the market account from a factory
     let market = make_market(
         &ctx,
