@@ -8,9 +8,22 @@ pub const ADMIN_STORE_SEED: &[u8] = b"admin";
 pub mod exponent_admin {
     use super::*;
 
-    pub fn initialize_admin(ctx: Context<InitializeAdmin>) -> Result<()> {
+    pub fn initialize_admin(
+        ctx: Context<InitializeAdmin>,
+        initial_uber_admin: Pubkey,
+    ) -> Result<()> {
+        // The uber admin must be a key that can actually sign transactions.
+        // Initializing it to the program's own ID (as before) bricked the whole
+        // admin hierarchy: no key can ever satisfy `is_uber_admin`, so invites,
+        // principle admins, and every downstream admin-gated action were dead.
+        require!(initial_uber_admin != ID, ErrorCode::InvalidUberAdmin);
+        require!(
+            initial_uber_admin != Pubkey::default(),
+            ErrorCode::InvalidUberAdmin
+        );
+
         let admin_account = &mut ctx.accounts.admin_account;
-        admin_account.uber_admin = ID;
+        admin_account.uber_admin = initial_uber_admin;
         Ok(())
     }
 
@@ -37,37 +50,77 @@ pub mod exponent_admin {
     ) -> Result<()> {
         let admin_account = &mut ctx.accounts.admin_account;
         admin_account.is_uber_admin(&ctx.accounts.uber_admin.key())?;
+
+        let new_admin_key = ctx.accounts.new_admin.key();
+
+        // Reject duplicates and the zero key: duplicates grow the account by 32
+        // bytes per push while removal only removes the first occurrence.
+        require!(new_admin_key != Pubkey::default(), ErrorCode::InvalidAdmin);
+        let already_exists = match principle {
+            Principle::HotAdmin => admin_account
+                .principles
+                .hot_admin
+                .administrators
+                .contains(&new_admin_key),
+            Principle::ColdAdmin => admin_account
+                .principles
+                .cold_admin
+                .administrators
+                .contains(&new_admin_key),
+            Principle::PauseAdmin => admin_account
+                .principles
+                .pause_admin
+                .administrators
+                .contains(&new_admin_key),
+            Principle::Reserved1 => admin_account
+                .principles
+                .reserved1
+                .administrators
+                .contains(&new_admin_key),
+            Principle::Reserved2 => admin_account
+                .principles
+                .reserved2
+                .administrators
+                .contains(&new_admin_key),
+            Principle::Reserved3 => admin_account
+                .principles
+                .reserved3
+                .administrators
+                .contains(&new_admin_key),
+        };
+        require!(!already_exists, ErrorCode::AdminAlreadyExists);
+
         match principle {
             Principle::HotAdmin => admin_account
                 .principles
                 .hot_admin
                 .administrators
-                .push(ctx.accounts.new_admin.key()),
+                .push(new_admin_key),
             Principle::ColdAdmin => admin_account
                 .principles
                 .cold_admin
                 .administrators
-                .push(ctx.accounts.new_admin.key()),
+                .push(new_admin_key),
             Principle::PauseAdmin => admin_account
                 .principles
                 .pause_admin
                 .administrators
-                .push(ctx.accounts.new_admin.key()),
+                .push(new_admin_key),
             Principle::Reserved1 => admin_account
                 .principles
                 .reserved1
                 .administrators
-                .push(ctx.accounts.new_admin.key()),
+                .push(new_admin_key),
             Principle::Reserved2 => admin_account
                 .principles
                 .reserved2
                 .administrators
-                .push(ctx.accounts.new_admin.key()),
+                .push(new_admin_key),
             Principle::Reserved3 => admin_account
                 .principles
                 .reserved3
                 .administrators
-                .push(ctx.accounts.new_admin.key()),
+                .push(new_admin_key),
         }
         Ok(())
     }
@@ -78,6 +131,14 @@ pub mod exponent_admin {
     ) -> Result<()> {
         let admin_account = &mut ctx.accounts.admin_account;
         admin_account.is_uber_admin(&ctx.accounts.uber_admin.key())?;
+
+        let to_remove = ctx.accounts.admin_to_remove.key();
+
+        // Only shrink the account after a confirmed removal. The previous
+        // implementation shrank in the account constraint, before knowing
+        // whether anything was removed: removing a non-existent admin left the
+        // account 32 bytes too small for its own serialized Vec contents.
+        let mut removed = false;
         match principle {
             Principle::HotAdmin => {
                 if let Some(index) = admin_account
@@ -85,13 +146,14 @@ pub mod exponent_admin {
                     .hot_admin
                     .administrators
                     .iter()
-                    .position(|a| a == &ctx.accounts.admin_to_remove.key())
+                    .position(|a| a == &to_remove)
                 {
                     admin_account
                         .principles
                         .hot_admin
                         .administrators
                         .remove(index);
+                    removed = true;
                 }
             }
             Principle::ColdAdmin => {
@@ -100,13 +162,14 @@ pub mod exponent_admin {
                     .cold_admin
                     .administrators
                     .iter()
-                    .position(|a| a == &ctx.accounts.admin_to_remove.key())
+                    .position(|a| a == &to_remove)
                 {
                     admin_account
                         .principles
                         .cold_admin
                         .administrators
                         .remove(index);
+                    removed = true;
                 }
             }
             Principle::PauseAdmin => {
@@ -115,13 +178,14 @@ pub mod exponent_admin {
                     .pause_admin
                     .administrators
                     .iter()
-                    .position(|a| a == &ctx.accounts.admin_to_remove.key())
+                    .position(|a| a == &to_remove)
                 {
                     admin_account
                         .principles
                         .pause_admin
                         .administrators
                         .remove(index);
+                    removed = true;
                 }
             }
             Principle::Reserved1 => {
@@ -130,13 +194,14 @@ pub mod exponent_admin {
                     .reserved1
                     .administrators
                     .iter()
-                    .position(|a| a == &ctx.accounts.admin_to_remove.key())
+                    .position(|a| a == &to_remove)
                 {
                     admin_account
                         .principles
                         .reserved1
                         .administrators
                         .remove(index);
+                    removed = true;
                 }
             }
             Principle::Reserved2 => {
@@ -145,13 +210,14 @@ pub mod exponent_admin {
                     .reserved2
                     .administrators
                     .iter()
-                    .position(|a| a == &ctx.accounts.admin_to_remove.key())
+                    .position(|a| a == &to_remove)
                 {
                     admin_account
                         .principles
                         .reserved2
                         .administrators
                         .remove(index);
+                    removed = true;
                 }
             }
             Principle::Reserved3 => {
@@ -160,16 +226,31 @@ pub mod exponent_admin {
                     .reserved3
                     .administrators
                     .iter()
-                    .position(|a| a == &ctx.accounts.admin_to_remove.key())
+                    .position(|a| a == &to_remove)
                 {
                     admin_account
                         .principles
                         .reserved3
                         .administrators
                         .remove(index);
+                    removed = true;
                 }
             }
         }
+
+        if removed {
+            // One Pubkey (32 bytes) was removed, so shrink by exactly that much,
+            // but never below the static size of the account.
+            let admin_account_info = admin_account.to_account_info();
+            let current_size = admin_account_info.data_len();
+            let new_size = current_size.saturating_sub(32);
+            require!(
+                new_size >= Admin::size_of_static(),
+                ErrorCode::AccountTooSmall
+            );
+            admin_account_info.realloc(new_size, false)?;
+        }
+
         Ok(())
     }
 
@@ -177,6 +258,10 @@ pub mod exponent_admin {
         let admin_account = &mut ctx.accounts.admin_account;
         let current_size = admin_account.to_account_info().data_len();
         let new_size = current_size + additional_bytes as usize;
+
+        // Bound the growth so a single call cannot arbitrarily inflate the
+        // account (and so repeated calls cannot walk the rent requirements up).
+        require!(new_size <= current_size + 1024, ErrorCode::ReallocTooLarge);
 
         admin_account.realloc(new_size, false)?;
 
@@ -201,7 +286,11 @@ pub struct InitializeAdmin<'info> {
 
 #[derive(Accounts)]
 pub struct InviteAdmin<'info> {
-    #[account(mut)]
+    #[account(
+        mut,
+        seeds = [&ADMIN_STORE_SEED],
+        bump
+    )]
     pub admin_account: Account<'info, Admin>,
     pub uber_admin: Signer<'info>,
     /// CHECK:
@@ -213,6 +302,8 @@ pub struct InviteAdmin<'info> {
 pub struct AcceptInvitation<'info> {
     #[account(
         mut,
+        seeds = [&ADMIN_STORE_SEED],
+        bump,
         constraint = admin_account.proposed_uber_admin == Some(new_uber_admin.key())
     )]
     pub admin_account: Account<'info, Admin>,
@@ -223,6 +314,8 @@ pub struct AcceptInvitation<'info> {
 pub struct AddPrincipleAdmin<'info> {
     #[account(
         mut,
+        seeds = [&ADMIN_STORE_SEED],
+        bump,
         realloc = admin_account.to_account_info().data_len() + 32,
         realloc::payer = fee_payer,
         realloc::zero = false
@@ -238,11 +331,11 @@ pub struct AddPrincipleAdmin<'info> {
 
 #[derive(Accounts)]
 pub struct RemovePrincipleAdmin<'info> {
+    // The account is shrunk inside the handler, only after a confirmed removal.
     #[account(
         mut,
-        realloc = admin_account.to_account_info().data_len() - 32,
-        realloc::payer = uber_admin,
-        realloc::zero = false
+        seeds = [&ADMIN_STORE_SEED],
+        bump
     )]
     pub admin_account: Account<'info, Admin>,
     /// CHECK:
@@ -255,13 +348,17 @@ pub struct RemovePrincipleAdmin<'info> {
 #[derive(Accounts)]
 #[instruction(additional_bytes: u16)]
 pub struct ReallocAdmin<'info> {
-    #[account(mut)]
+    // Only the uber admin may grow the admin account, and the target must be the
+    // canonical admin PDA. Previously any signer could realloc any writable
+    // account in the transaction.
+    #[account(
+        mut,
+        seeds = [&ADMIN_STORE_SEED],
+        bump,
+        constraint = admin_account.uber_admin == signer.key()
+    )]
+    pub admin_account: Account<'info, Admin>,
     pub signer: Signer<'info>,
-
-    /// CHECK:
-    #[account(mut)]
-    pub admin_account: UncheckedAccount<'info>,
-
     pub system_program: Program<'info, System>,
 }
 
@@ -333,4 +430,14 @@ pub enum ErrorCode {
     Unauthorized,
     #[msg("There is no proposed admin")]
     NoProposedAdmin,
+    #[msg("Invalid admin key: must not be the zero address or the program itself")]
+    InvalidUberAdmin,
+    #[msg("Invalid admin key")]
+    InvalidAdmin,
+    #[msg("Admin already exists")]
+    AdminAlreadyExists,
+    #[msg("Account too small to shrink any further")]
+    AccountTooSmall,
+    #[msg("Reallocation too large")]
+    ReallocTooLarge,
 }

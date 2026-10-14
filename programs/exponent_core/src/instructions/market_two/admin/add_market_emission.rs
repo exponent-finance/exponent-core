@@ -23,6 +23,10 @@ pub struct AddMarketEmission<'info> {
 
     pub mint_new: InterfaceAccount<'info, Mint>,
 
+    #[account(
+        seeds = [exponent_admin::ADMIN_STORE_SEED],
+        bump
+    )]
     pub admin_state: Account<'info, Admin>,
 
     #[account(
@@ -42,7 +46,7 @@ impl<'i> AddMarketEmission<'i> {
     pub fn validate(&self) -> Result<()> {
         self.admin_state
             .principles
-            .cold_admin
+            .hot_admin
             .is_admin(&self.signer.key())?;
 
         Ok(())
@@ -52,7 +56,6 @@ impl<'i> AddMarketEmission<'i> {
         self.market.cpi_accounts = cpi_accounts;
     }
 }
-
 
 #[access_control(ctx.accounts.validate())]
 pub fn handler(ctx: Context<AddMarketEmission>, cpi_accounts: CpiAccounts) -> Result<()> {
