@@ -53,6 +53,10 @@ pub struct CollectTreasuryEmission<'info> {
 
     pub token_program: Interface<'info, TokenInterface>,
 
+    #[account(
+        seeds = [exponent_admin::ADMIN_STORE_SEED],
+        bump
+    )]
     pub admin: Account<'info, Admin>,
 }
 

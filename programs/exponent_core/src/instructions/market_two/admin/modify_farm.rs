@@ -14,6 +14,10 @@ pub struct ModifyFarm<'info> {
 
     pub mint: InterfaceAccount<'info, Mint>,
 
+    #[account(
+        seeds = [exponent_admin::ADMIN_STORE_SEED],
+        bump
+    )]
     pub admin_state: Account<'info, Admin>,
 
     #[account(mut)]

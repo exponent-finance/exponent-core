@@ -10,6 +10,10 @@ pub struct ReallocMarket<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
+    #[account(
+        seeds = [exponent_admin::ADMIN_STORE_SEED],
+        bump
+    )]
     pub admin_state: Account<'info, Admin>,
 
     pub system_program: Program<'info, System>,
